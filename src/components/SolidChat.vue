@@ -6,21 +6,10 @@
     root : {{ root }}
     Index  : {{ index }}
   </p> -->
-  <!--  <SolidList  /> -->
+ <SolidChatList :messages="messages" />
 
 
-  <b-list-group  v-for="m in messages" :key="m.id">
-    <b-list-group-item button class="d-flex justify-content-between align-items-center">
-    :  {{ m.content}}
 
-      <b-badge variant="info">
-        {{ m.created }}
-        <div>
-          newRoom<br> reply <br>
-            {{m.maker }}
-        </div></b-badge>
-      </b-list-group-item>
-    </b-list-group>
 
 
     <b-button @click="before">day before</b-button>
@@ -39,7 +28,7 @@
 import SolidChatSend from '@/components/SolidChatSend.vue'
 import SolidChatRooms from '@/components/SolidChatRooms.vue'
 import SolidLogin from '@/components/SolidLogin.vue'
-//import SolidList from '@/components/SolidList.vue'
+import SolidChatList from '@/components/SolidChatList.vue'
 import { fetchDocument } from 'tripledoc';
 import { sioc, dct, foaf } from 'rdf-namespaces'
 
@@ -49,8 +38,8 @@ export default {
   components: {
     SolidChatSend,
     SolidChatRooms,
-    SolidLogin
-    //  SolidList
+    SolidLogin,
+    SolidChatList
   },
   props: {
     root: String,
