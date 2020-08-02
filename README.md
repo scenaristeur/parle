@@ -1,5 +1,25 @@
 # parle
 
+
+
+# make a gh-pages branches
+
+https://stackoverflow.com/questions/36782467/set-subdirectory-as-website-root-on-github-pages
+
+create subbranch with dist folder
+
+    comment the dist folder in the .gitignore file
+
+git add dist -f && git commit -m "Initial dist subtree commit"
+
+    build & publish to gh-pages
+
+npm run build && git add .
+git commit -m "my modif"
+git push && git subtree push --prefix dist origin gh-pages
+
+
+
 ## Project setup
 ```
 npm install
