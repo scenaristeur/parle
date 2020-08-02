@@ -14,6 +14,7 @@
 
     <b-button @click="before">day before</b-button>
     <b-button @click="after">day after</b-button>
+    or infinite scroll, loading yesterday...
     <br>
     <a v-bind:href="root" target="_blank">where is the data</a>
     <br>

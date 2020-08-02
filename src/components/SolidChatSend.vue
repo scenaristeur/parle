@@ -7,7 +7,7 @@
       <b-form-input v-model="message" v-on:keyup.enter="send"></b-form-input>
       <b-input-group-append>
         <!--  <b-button variant="outline-success">Button</b-button>-->
-        <b-button variant="info" @click="send" >Send</b-button>
+        <b-button variant="warning" @click="send" >Send</b-button>
       </b-input-group-append>
     </b-input-group>
 
