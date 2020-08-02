@@ -6,7 +6,7 @@
     check out the
     <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
   </p>-->
-  <!--<SolidChatRooms :root="this.root" :index="this.index" />-->
+  <SolidChatRooms :root="this.base" :index="this.index" />
   <!--<p>
   root : {{ root }}
   Index  : {{ index }}
@@ -23,25 +23,25 @@
       <div>
         newRoom<br> reply
       </div></b-badge>
-  </b-list-group-item>
-</b-list-group>
+    </b-list-group-item>
+  </b-list-group>
 
 
-<b-button @click="before">day before</b-button>
-<b-button @click="after">day after</b-button>
-<br>
-<a v-bind:href="root" target="_blank">where is the data</a>
-<br>
-<a href="https://github.com/scenaristeur/parle" target="_blank">source</a>
-<br><br><br><br><br><br>
+  <b-button @click="before">day before</b-button>
+  <b-button @click="after">day after</b-button>
+  <br>
+  <a v-bind:href="root" target="_blank">where is the data</a>
+  <br>
+  <a href="https://github.com/scenaristeur/parle" target="_blank">source</a>
+  <br><br><br><br><br><br>
 
-<SolidChatSend :index="index" />
+  <SolidChatSend :index="index" />
 </div>
 </template>
 
 <script>
 import SolidChatSend from '@/components/SolidChatSend.vue'
-//import SolidChatRooms from '@/components/SolidChatRooms.vue'
+import SolidChatRooms from '@/components/SolidChatRooms.vue'
 //import SolidList from '@/components/SolidList.vue'
 import { fetchDocument } from 'tripledoc';
 import { sioc, dct } from 'rdf-namespaces'
@@ -51,7 +51,7 @@ export default {
   name: 'SolidChat',
   components: {
     SolidChatSend,
-    //    SolidChatRooms
+    SolidChatRooms
     //  SolidList
   },
   props: {
@@ -60,7 +60,8 @@ export default {
   data: function () {
     return {
       history: [],
-      messages : []
+      messages : [],
+
     }
   },
   mounted(){
@@ -70,6 +71,7 @@ export default {
   created() {
     console.log("CREATE ", this.root)
     console.log("Chat Root",this.root)
+    this.base = this.root+"parle/"
     let withoutProtocol = this.root.split('//')[1]
     console.log(withoutProtocol)
     let sock = withoutProtocol.split('/')[0]+"/"

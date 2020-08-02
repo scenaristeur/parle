@@ -1,10 +1,17 @@
 <template>
   <div class="solid-chat-send">
-    <h1>Rooms</h1>
 
-    -  root  {{ root }}<br>
-    - index {{ index }}<br>
-    - folder {{ folder }}
+
+
+
+    <div v-for="f in folder.folders" :key="f.name">
+      <b-button>
+        {{ f.name}}
+
+      </b-button>
+    </div>
+
+
     <b-input-group class="mt-3">
       <b-form-input v-model="message"></b-form-input>
       <b-input-group-append>
@@ -12,6 +19,10 @@
         <b-button variant="info" @click="send">Create room</b-button>
       </b-input-group-append>
     </b-input-group>
+    -  root  {{ root }}<br>
+    - index {{ index }}<br>
+    - folder {{ folder }}
+    <hr>
   </div>
 </template>
 
@@ -48,7 +59,9 @@ export default {
     this.fc.readFolder(this.root).then(folder => {
       console.log("Folder",folder)
       //  store.commit('local/setShapeUrl', this.shape_url)
-      return folder
+      //let f = `${folder}`
+      //return f
+      this.folder = folder
     },
     err => { console.log("erreur for url : ", this.root,err) })
 
