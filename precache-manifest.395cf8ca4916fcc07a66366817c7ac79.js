@@ -1,14 +1,14 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "53289a7f676b21782022",
-    "url": "/parle/css/app.d5b2600e.css"
+    "revision": "c0bda9ad704f60974a9f",
+    "url": "/parle/css/app.a2139742.css"
   },
   {
     "revision": "27a0302fa05b65afbff4",
     "url": "/parle/css/chunk-vendors.3a6c5b3b.css"
   },
   {
-    "revision": "6c70f0f964c64f286d17ce9efef9e687",
+    "revision": "2fd5ca0b9e091c41aafb0e88804579a7",
     "url": "/parle/index.html"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/parle/js/about.82bd442e.js"
   },
   {
-    "revision": "53289a7f676b21782022",
-    "url": "/parle/js/app.d89e7065.js"
+    "revision": "c0bda9ad704f60974a9f",
+    "url": "/parle/js/app.d3d19b95.js"
   },
   {
     "revision": "27a0302fa05b65afbff4",
