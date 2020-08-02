@@ -1,57 +1,55 @@
 <template>
   <div class="hello">
-    <h1>Solid Chat</h1>
-    <!--  <p>
-    For a guide and recipes on how to configure / customize this project,<br>
-    check out the
-    <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-  </p>-->
-  <SolidChatRooms :root="this.base" :index="this.index" />
-  <!--<p>
-  root : {{ root }}
-  Index  : {{ index }}
-</p> -->
-<!--  <SolidList  /> -->
+    <SolidLogin />
+    <SolidChatRooms :root="this.base" :index="this.index" />
+    <!--<p>
+    root : {{ root }}
+    Index  : {{ index }}
+  </p> -->
+  <!--  <SolidList  /> -->
 
 
-<b-list-group  v-for="m in messages" :key="m.id">
-  <b-list-group-item button class="d-flex justify-content-between align-items-center">
-    {{ m.content}}
+  <b-list-group  v-for="m in messages" :key="m.id">
+    <b-list-group-item button class="d-flex justify-content-between align-items-center">
+    :  {{ m.content}}
 
-    <b-badge variant="info">
-      {{ m.created }}
-      <div>
-        newRoom<br> reply
-      </div></b-badge>
-    </b-list-group-item>
-  </b-list-group>
+      <b-badge variant="info">
+        {{ m.created }}
+        <div>
+          newRoom<br> reply <br>
+            {{m.maker }}
+        </div></b-badge>
+      </b-list-group-item>
+    </b-list-group>
 
 
-  <b-button @click="before">day before</b-button>
-  <b-button @click="after">day after</b-button>
-  <br>
-  <a v-bind:href="root" target="_blank">where is the data</a>
-  <br>
-  <a href="https://github.com/scenaristeur/parle" target="_blank">source</a>
-  <br><br><br><br><br><br>
+    <b-button @click="before">day before</b-button>
+    <b-button @click="after">day after</b-button>
+    <br>
+    <a v-bind:href="root" target="_blank">where is the data</a>
+    <br>
+    <a href="https://github.com/scenaristeur/parle" target="_blank">source</a>
+    <br><br><br><br><br><br>
 
-  <SolidChatSend :index="index" />
-</div>
+    <SolidChatSend :index="index" />
+  </div>
 </template>
 
 <script>
 import SolidChatSend from '@/components/SolidChatSend.vue'
 import SolidChatRooms from '@/components/SolidChatRooms.vue'
+import SolidLogin from '@/components/SolidLogin.vue'
 //import SolidList from '@/components/SolidList.vue'
 import { fetchDocument } from 'tripledoc';
-import { sioc, dct } from 'rdf-namespaces'
+import { sioc, dct, foaf } from 'rdf-namespaces'
 
 
 export default {
   name: 'SolidChat',
   components: {
     SolidChatSend,
-    SolidChatRooms
+    SolidChatRooms,
+    SolidLogin
     //  SolidList
   },
   props: {
@@ -130,7 +128,8 @@ export default {
       //  let t = s.getTriples()
       let created = s.getString(dct.created)
       let content = s.getLiteral(sioc.content)
-      let t={id:i, created: new Date(created).toLocaleTimeString(), content: content}
+      let maker = s.getNodeRef(foaf.maker)
+      let t={id:i, created: new Date(created).toLocaleTimeString(), content: content, maker:maker}
       //  console.log(t)
       triples.push(t)
 

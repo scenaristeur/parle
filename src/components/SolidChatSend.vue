@@ -16,12 +16,14 @@
 </template>
 
 <script>
+import store from "@/store";
 import { fetchDocument } from 'tripledoc';
 import {namedNode, sioc, dct, foaf } from 'rdf-namespaces'
 
 
 
 export default {
+  store,
   name: 'SolidChatSend',
   components:{
     //solid
@@ -43,7 +45,8 @@ export default {
     async send(){
       // please refer to https://github.com/scenaristeur/shighl/blob/9b4b61d06d8a20f55de3f2aa580cbc5fb840d584/src/Shighl-chat.js#L214
       // and https://github.com/LDflex/LDflex/issues/53
-      if (this.message.length > 0)    {
+      let webId= this.$store.state.solid.webId
+      if (this.message.length > 0 && webId != null)    {
         console.log(this.message)
         var dateObj = new Date();
         var messageId = "Msg"+dateObj.getTime()
@@ -52,44 +55,48 @@ export default {
         /*  console.log(msgUrl)
         await solid.data[msgUrl].dct$created.add(date)
         await solid.data[msgUrl].sioc$content.add(this.message)*/
-
+        console.log("WEBID",this.$store.state.solid.webId, this.$store.state.count)
 
         const chatDoc = await fetchDocument(this.index);
         console.log(chatDoc)
         let subj =   chatDoc.addSubject({identifier:messageId})
         subj.addLiteral(sioc.content, this.message)
         subj.addLiteral(dct.created, date)
+        subj.addNodeRef(foaf.maker, webId)
         await chatDoc.save();
 
-        this.message=""}
-        //  await solid.data[msgUrl].foaf$maker.add(namedNode('https://www.test.com')) // namedNode(`${webid}`)
-        //  await solid.data.from(this.url)[messageId]['http://www.w3.org/2005/01/wf/flow#message'].add(this.url)
-        //this.message = ""
-        //  await solid.data.from(this.url)[this.subject]['http://www.w3.org/2005/01/wf/flow#message'].add(namedNode(this.url))
+        this.message=""
+      }else{
+        alert ( "You must login before posting ;-)")
       }
+      //  await solid.data[msgUrl].foaf$maker.add(namedNode('https://www.test.com')) // namedNode(`${webid}`)
+      //  await solid.data.from(this.url)[messageId]['http://www.w3.org/2005/01/wf/flow#message'].add(this.url)
+      //this.message = ""
+      //  await solid.data.from(this.url)[this.subject]['http://www.w3.org/2005/01/wf/flow#message'].add(namedNode(this.url))
     }
   }
-  </script>
+}
+</script>
 
-  <!-- Add "scoped" attribute to limit CSS to this component only -->
-  <style scoped>
-  .input {
-    position: fixed;
-    bottom:0;
-    z-index: 999;
-  }
-  h3 {
-    margin: 40px 0 0;
-  }
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  li {
-    display: inline-block;
-    margin: 0 10px;
-  }
-  a {
-    color: #42b983;
-  }
-  </style>
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+.input {
+  position: fixed;
+  bottom:0;
+  z-index: 999;
+}
+h3 {
+  margin: 40px 0 0;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+</style>

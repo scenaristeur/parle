@@ -3,26 +3,27 @@
 
 
 
-
-    <div v-for="f in folder.folders" :key="f.name">
-      <b-button>
-        {{ f.name}}
-
-      </b-button>
+    <div>
+      <b-button-group  v-for="f in folder.folders" :key="f.url" class="inline">
+        <b-button variant="primary" :value="f.url" @click="changeRoom">
+          {{ f.name}}
+        </b-button>
+      </b-button-group>
     </div>
+
 
 
     <b-input-group class="mt-3">
       <b-form-input v-model="message"></b-form-input>
       <b-input-group-append>
         <!--  <b-button variant="outline-success">Button</b-button>-->
-        <b-button variant="info" @click="send">Create room</b-button>
+        <b-button variant="primary" @click="send">Create room</b-button>
       </b-input-group-append>
     </b-input-group>
-    -  root  {{ root }}<br>
+    <!--  -  root  {{ root }}<br>
     - index {{ index }}<br>
     - folder {{ folder }}
-    <hr>
+    <hr>-->
   </div>
 </template>
 
@@ -56,14 +57,7 @@ export default {
 
     console.log(this.fc)
 
-    this.fc.readFolder(this.root).then(folder => {
-      console.log("Folder",folder)
-      //  store.commit('local/setShapeUrl', this.shape_url)
-      //let f = `${folder}`
-      //return f
-      this.folder = folder
-    },
-    err => { console.log("erreur for url : ", this.root,err) })
+    this.readFolder()
 
     /*  if( await this.fc.itemExists(this.source)) {
     await this.fc.readFolder(this.source).then(folder => {
@@ -75,10 +69,39 @@ export default {
 }*/
 },
 methods: {
+  changeRoom(e){
+    let newRoom = e.target.value
+    console.log(newRoom)
+  },
+  readFolder(){
+    this.fc.readFolder(this.root).then(folder => {
+      console.log("READ Folder",folder)
+      //  store.commit('local/setShapeUrl', this.shape_url)
+      //let f = `${folder}`
+      //return f
+      this.folder = folder
+    },
+    err => { console.log("erreur for url : ", this.root,err) })
+  },
   async send(){
+    let webId= this.$store.state.solid.webId
+    if (webId != null ){
+      console.log(this.message)
+      this.fc.createFolder(this.root+this.message).then(folder => {
+        console.log("Folder",folder)
+        console.log("folder created", folder)
+        this.readFolder()
+        //  store.commit('local/setShapeUrl', this.shape_url)
+        //let f = `${folder}`
+        //return f
+        //  this.folder = folder
+      },
+      err => { console.log("erreur for url : ", this.root,err) })
+
+    }else{ alert("You must login to create a room ! ")}
     // please refer to https://github.com/scenaristeur/shighl/blob/9b4b61d06d8a20f55de3f2aa580cbc5fb840d584/src/Shighl-chat.js#L214
     // and https://github.com/LDflex/LDflex/issues/53
-    console.log(this.message)
+
     /*  var dateObj = new Date();
     var messageId = "#Msg"+dateObj.getTime()
     var date = dateObj.toISOString()
