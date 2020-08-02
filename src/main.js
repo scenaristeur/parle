@@ -17,8 +17,12 @@ Vue.use(IconsPlugin)
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+let solid = window.solid
+console.log("SOLID",solid)
+
 new Vue({
   router,
   store,
+  solid,
   render: h => h(App)
 }).$mount('#app')

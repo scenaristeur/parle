@@ -1,25 +1,31 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <p>
-      History on  https://parle.solid.community/public/test/lastest.ttl' : {{ history }}
-    </p>
-    <SolidChatSend />
+    <h1>Solid Chat</h1>
+    <!--  <p>
+    For a guide and recipes on how to configure / customize this project,<br>
+    check out the
+    <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
+  </p>-->
+  <p>
+    History on  https://parle.solid.community/public/test/lastest.ttl' : {{ history }}
+  </p>
+<!--  <SolidList  /> -->
+  <SolidChatSend />
 
-  </div>
+</div>
 </template>
 
 <script>
 import SolidChatSend from '@/components/SolidChatSend.vue'
+//import SolidList from '@/components/SolidList.vue'
+import { fetchDocument } from 'tripledoc';
+
+
 export default {
   name: 'SolidChat',
   components: {
-    SolidChatSend
+    SolidChatSend,
+  //  SolidList
   },
   props: {
     msg: String,
@@ -49,10 +55,16 @@ export default {
     }.bind(this)
   },
   methods: {
-    resourceUpdated(msg) {
+    async  resourceUpdated(msg) {
       console.log("updated",msg.data)
       this.history.push({type: "update", url: msg.data})
-
+      let uri = msg.data.substring(4)
+      console.log(uri)
+      const chatDoc = await fetchDocument(uri);
+      console.log(chatDoc)
+      const statements = chatDoc.getStatements();
+      console.log(statements)
+      this.history = statements
     }
   }
 }

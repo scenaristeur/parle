@@ -26,17 +26,14 @@ export default {
   },
   data: function () {
     return {
-      message: "d",
+      message: "",
       url : "https://parle.solid.community/public/test/lastest.ttl",
-      subject: "ola"
+    //  subject: "ola"
 
 
     }
   },
-  created(){
-    this.solid = window.solid
-    console.log("SOLID",this.solid)
-  },
+
   methods: {
     async send(){
       // please refer to https://github.com/scenaristeur/shighl/blob/9b4b61d06d8a20f55de3f2aa580cbc5fb840d584/src/Shighl-chat.js#L214
@@ -46,11 +43,11 @@ export default {
       var messageId = "#Msg"+dateObj.getTime()
       var date = dateObj.toISOString()
       let msgUrl = this.url+messageId
-      await this.solid.data[msgUrl].dct$created.add(date)
-      await this.solid.data[msgUrl].sioc$content.add(this.message)
-      await this.solid.data[msgUrl].foaf$maker.add(namedNode('https://www.test.com')) // namedNode(`${webid}`)
-    //  await solid.data.from(this.url)[messageId]['http://www.w3.org/2005/01/wf/flow#message'].add(this.url)
-this.message = ""
+      await solid.data[msgUrl].dct$created.add(date)
+      await solid.data[msgUrl].sioc$content.add(this.message)
+      await solid.data[msgUrl].foaf$maker.add(namedNode('https://www.test.com')) // namedNode(`${webid}`)
+      //  await solid.data.from(this.url)[messageId]['http://www.w3.org/2005/01/wf/flow#message'].add(this.url)
+      //this.message = ""
       //  await solid.data.from(this.url)[this.subject]['http://www.w3.org/2005/01/wf/flow#message'].add(namedNode(this.url))
     }
   }
