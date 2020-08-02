@@ -6,17 +6,20 @@
     check out the
     <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
   </p>-->
+ <SolidChatRooms :root="this.root" :index="this.index" />
   <p>
-    History on  https://parle.solid.community/public/test/lastest.ttl' : {{ history }}
+    root : {{ root }}
+    Index  : {{ index }}
   </p>
-<!--  <SolidList  /> -->
-  <SolidChatSend />
+  <!--  <SolidList  /> -->
+  <SolidChatSend :index="index" />
 
 </div>
 </template>
 
 <script>
 import SolidChatSend from '@/components/SolidChatSend.vue'
+import SolidChatRooms from '@/components/SolidChatRooms.vue'
 //import SolidList from '@/components/SolidList.vue'
 import { fetchDocument } from 'tripledoc';
 
@@ -25,11 +28,11 @@ export default {
   name: 'SolidChat',
   components: {
     SolidChatSend,
-  //  SolidList
+    SolidChatRooms
+    //  SolidList
   },
   props: {
-    msg: String,
-
+    root: String,
   },
   data: function () {
     return {
@@ -37,15 +40,27 @@ export default {
     }
   },
   mounted(){
-    this.history = ["no","one","tri"]
+    //  this.history = ["no","one","tri"]
+
   },
   created() {
+    console.log("CREATE ", this.root)
+    console.log("Chat Root",this.root)
+    let withoutProtocol = this.root.split('//')[1]
+    console.log(withoutProtocol)
+    let sock = withoutProtocol.split('/')[0]+"/"
+    console.log("Sock",sock)
+    let now = new Date()
+    let filename = [now.getFullYear(), ("0" + (now.getMonth() + 1)).slice(-2), ("0" + now.getDate()).slice(-2)].join("-")+".ttl"
+    this.index = this.root+"parle/"+filename
+    console.log("Index",this.index)
     //  let app = this
-    var socket = new WebSocket('wss://parle.solid.community/', ['solid/0.1.0-alpha']);
-
+    var socket = new WebSocket('wss://'+sock, ['solid/0.1.0-alpha']);
+    console.log("SOCKET",socket)
     socket.onopen = function() {
-      this.send('sub https://parle.solid.community/public/test/lastest.ttl');
-    };
+      console.log("SOCKET OPEN", socket,+this.index)
+      socket.send('sub '+this.index);
+    }.bind(this)
     socket.onmessage = function(msg) {
 
       if (msg.data && msg.data.slice(0, 3) === 'pub') {
@@ -57,14 +72,16 @@ export default {
   methods: {
     async  resourceUpdated(msg) {
       console.log("updated",msg.data)
-      this.history.push({type: "update", url: msg.data})
+      //  this.history.push({type: "update", url: msg.data})
       let uri = msg.data.substring(4)
       console.log(uri)
       const chatDoc = await fetchDocument(uri);
       console.log(chatDoc)
-      const statements = chatDoc.getStatements();
-      console.log(statements)
-      this.history = statements
+      const subjects = chatDoc.findSubjects();
+      console.log(subjects)
+    /*  const statements = chatDoc.getStatements();
+      console.log(statements)*/
+      //  this.history = statements
     }
   }
 }

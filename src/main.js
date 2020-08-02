@@ -19,6 +19,8 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 let solid = window.solid
 console.log("SOLID",solid)
+let SolidFileClient = window.SolidFileClient
+console.log("SFC", SolidFileClient)
 
 new Vue({
   router,

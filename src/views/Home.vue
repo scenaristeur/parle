@@ -1,7 +1,7 @@
 <template>
   <div class="home">
 <!--    <img alt="Vue logo" src="../assets/logo.png"> -->
-    <SolidChat msg="Welcome to Solid Chat"/>
+    <SolidChat root="https://parle.solid.community/public/" />
 <!--    <HelloWorld msg="Welcome to Your Vue.js App"/>-->
 
   </div>

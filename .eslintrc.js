@@ -4,7 +4,8 @@ module.exports = {
     node: true
   },
   "globals": {
-    "solid": false
+    "solid": false,
+    "SolidFileClient": false
   },
   'extends': [
     'plugin:vue/essential',

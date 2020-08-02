@@ -1,8 +1,8 @@
 <template>
   <div class="solid-chat-send">
-    <h1>Room name</h1>
+    <!--<h1>Room name</h1> -->
 
-    {{ message }}
+    {{ index }}
     <b-input-group class="mt-3">
       <b-form-input v-model="message"></b-form-input>
       <b-input-group-append>
@@ -24,11 +24,14 @@ export default {
   components:{
     //solid
   },
+  props: [
+    'index'
+  ],
   data: function () {
     return {
       message: "",
-      url : "https://parle.solid.community/public/test/lastest.ttl",
-    //  subject: "ola"
+      //    index : "https://parle.solid.community/public/test/lastest.ttl",
+      //  subject: "ola"
 
 
     }
@@ -42,10 +45,11 @@ export default {
       var dateObj = new Date();
       var messageId = "#Msg"+dateObj.getTime()
       var date = dateObj.toISOString()
-      let msgUrl = this.url+messageId
+      let msgUrl = this.index+messageId
+      console.log(msgUrl)
       await solid.data[msgUrl].dct$created.add(date)
       await solid.data[msgUrl].sioc$content.add(this.message)
-      await solid.data[msgUrl].foaf$maker.add(namedNode('https://www.test.com')) // namedNode(`${webid}`)
+      //  await solid.data[msgUrl].foaf$maker.add(namedNode('https://www.test.com')) // namedNode(`${webid}`)
       //  await solid.data.from(this.url)[messageId]['http://www.w3.org/2005/01/wf/flow#message'].add(this.url)
       //this.message = ""
       //  await solid.data.from(this.url)[this.subject]['http://www.w3.org/2005/01/wf/flow#message'].add(namedNode(this.url))
