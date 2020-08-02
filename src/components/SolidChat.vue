@@ -6,29 +6,34 @@
     check out the
     <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
   </p>-->
- <SolidChatRooms :root="this.root" :index="this.index" />
-  <p>
+  <!--<SolidChatRooms :root="this.root" :index="this.index" />-->
+  <!--<p>
     root : {{ root }}
     Index  : {{ index }}
-  </p>
+  </p> -->
   <!--  <SolidList  /> -->
   <SolidChatSend :index="index" />
+
+  <ul>
+    <li v-for="m in messages" :key="m.id"> -  {{ m.created }} : {{ m.content}}</li>
+  </ul>
 
 </div>
 </template>
 
 <script>
 import SolidChatSend from '@/components/SolidChatSend.vue'
-import SolidChatRooms from '@/components/SolidChatRooms.vue'
+//import SolidChatRooms from '@/components/SolidChatRooms.vue'
 //import SolidList from '@/components/SolidList.vue'
 import { fetchDocument } from 'tripledoc';
+import { sioc, dct } from 'rdf-namespaces'
 
 
 export default {
   name: 'SolidChat',
   components: {
     SolidChatSend,
-    SolidChatRooms
+//    SolidChatRooms
     //  SolidList
   },
   props: {
@@ -36,7 +41,8 @@ export default {
   },
   data: function () {
     return {
-      history: Array
+      history: [],
+      messages : []
     }
   },
   mounted(){
@@ -65,25 +71,54 @@ export default {
 
       if (msg.data && msg.data.slice(0, 3) === 'pub') {
         // resource updated, refetch resource
-        this.resourceUpdated(msg)
+        console.log("updated",msg.data)
+        //  this.history.push({type: "update", url: msg.data})
+
+        this.resourceUpdated(msg.data.substring(4))
       }
     }.bind(this)
+    this.resourceUpdated(this.index)
   },
   methods: {
-    async  resourceUpdated(msg) {
-      console.log("updated",msg.data)
-      //  this.history.push({type: "update", url: msg.data})
-      let uri = msg.data.substring(4)
+    async  resourceUpdated(uri) {
+
       console.log(uri)
       const chatDoc = await fetchDocument(uri);
-      console.log(chatDoc)
-      const subjects = chatDoc.findSubjects();
-      console.log(subjects)
+    //  console.log(chatDoc)
+    /*  let triples = chatDoc.getTriples()
+      console.log(triples)
+    //  this.messages = {}
+      triples.forEach((t, i) => {
+        !Object.prototype.hasOwnProperty.call(this.messages, t.subject.id) ? this.messages[t.subject.id] = {} : "";
+        this.messages[t.subject.id][t.predicate.id] = t.object.id
+
+      });
+      console.log(this.messages)*/
+        let  subjects = chatDoc.findSubjects();
+         subjects = subjects.filter( this.onlyUnique )
+  //    console.log(subjects)
+      let triples = []
+      subjects.forEach((s, i) => {
+    //  console.log(s)
+      //  let t = s.getTriples()
+      let created = s.getString(dct.created)
+      let content = s.getLiteral(sioc.content)
+      let t={id:i, created: created, content: content}
+    //  console.log(t)
+      triples.push(t)
+
+    });
+  //  console.log(triples)
+    this.messages = triples
+
     /*  const statements = chatDoc.getStatements();
-      console.log(statements)*/
-      //  this.history = statements
-    }
-  }
+    console.log(statements)*/
+    //  this.history = statements
+  },
+  onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+}
+}
 }
 </script>
 

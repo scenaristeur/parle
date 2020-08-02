@@ -14,7 +14,7 @@
 </template>
 
 <script>
-
+import { fetchDocument } from 'tripledoc';
 import {namedNode, sioc, dct, foaf } from 'rdf-namespaces'
 
 
@@ -43,12 +43,21 @@ export default {
       // and https://github.com/LDflex/LDflex/issues/53
       console.log(this.message)
       var dateObj = new Date();
-      var messageId = "#Msg"+dateObj.getTime()
+      var messageId = "Msg"+dateObj.getTime()
       var date = dateObj.toISOString()
       let msgUrl = this.index+messageId
-      console.log(msgUrl)
+      /*  console.log(msgUrl)
       await solid.data[msgUrl].dct$created.add(date)
-      await solid.data[msgUrl].sioc$content.add(this.message)
+      await solid.data[msgUrl].sioc$content.add(this.message)*/
+
+
+      const chatDoc = await fetchDocument(this.index);
+      console.log(chatDoc)
+      let subj =   chatDoc.addSubject({identifier:messageId})
+      subj.addLiteral(sioc.content, this.message)
+      subj.addLiteral(dct.created, date)
+      await chatDoc.save();
+
       //  await solid.data[msgUrl].foaf$maker.add(namedNode('https://www.test.com')) // namedNode(`${webid}`)
       //  await solid.data.from(this.url)[messageId]['http://www.w3.org/2005/01/wf/flow#message'].add(this.url)
       //this.message = ""
