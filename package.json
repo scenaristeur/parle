@@ -7,13 +7,14 @@
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "git": "npm run wc-build-all && git add . && git commit -m",
+    "git": "npm run build && git add . && git commit -m",
     "postgit": "git push && git subtree push --prefix dist origin gh-pages"
   },
   "dependencies": {
     "bootstrap": "^4.5.0",
     "bootstrap-vue": "^2.16.0",
     "core-js": "^3.6.5",
+    "git": "^0.1.5",
     "rdf-namespaces": "^1.8.0",
     "register-service-worker": "^1.7.1",
     "vue": "^2.6.11",
