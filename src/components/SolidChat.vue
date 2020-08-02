@@ -8,16 +8,34 @@
   </p>-->
   <!--<SolidChatRooms :root="this.root" :index="this.index" />-->
   <!--<p>
-    root : {{ root }}
-    Index  : {{ index }}
-  </p> -->
-  <!--  <SolidList  /> -->
-  <SolidChatSend :index="index" />
+  root : {{ root }}
+  Index  : {{ index }}
+</p> -->
+<!--  <SolidList  /> -->
 
-  <ul>
-    <li v-for="m in messages" :key="m.id"> -  {{ m.created }} : {{ m.content}}</li>
-  </ul>
 
+<b-list-group  v-for="m in messages" :key="m.id">
+  <b-list-group-item button class="d-flex justify-content-between align-items-center">
+    {{ m.content}}
+
+    <b-badge variant="info">
+      {{ m.created }}
+      <div>
+        newRoom<br> reply
+      </div></b-badge>
+  </b-list-group-item>
+</b-list-group>
+
+
+<b-button @click="before">day before</b-button>
+<b-button @click="after">day after</b-button>
+<br>
+<a v-bind:href="root" target="_blank">where is the data</a>
+<br>
+<a href="https://github.com/scenaristeur/parle" target="_blank">source</a>
+<br><br><br><br><br><br>
+
+<SolidChatSend :index="index" />
 </div>
 </template>
 
@@ -33,7 +51,7 @@ export default {
   name: 'SolidChat',
   components: {
     SolidChatSend,
-//    SolidChatRooms
+    //    SolidChatRooms
     //  SolidList
   },
   props: {
@@ -80,36 +98,43 @@ export default {
     this.resourceUpdated(this.index)
   },
   methods: {
+    before(){
+      console.log("before")
+    },
+    after(){
+      console.log("after")
+
+    },
     async  resourceUpdated(uri) {
 
       console.log(uri)
       const chatDoc = await fetchDocument(uri);
-    //  console.log(chatDoc)
-    /*  let triples = chatDoc.getTriples()
+      //  console.log(chatDoc)
+      /*  let triples = chatDoc.getTriples()
       console.log(triples)
-    //  this.messages = {}
+      //  this.messages = {}
       triples.forEach((t, i) => {
-        !Object.prototype.hasOwnProperty.call(this.messages, t.subject.id) ? this.messages[t.subject.id] = {} : "";
-        this.messages[t.subject.id][t.predicate.id] = t.object.id
+      !Object.prototype.hasOwnProperty.call(this.messages, t.subject.id) ? this.messages[t.subject.id] = {} : "";
+      this.messages[t.subject.id][t.predicate.id] = t.object.id
 
-      });
-      console.log(this.messages)*/
-        let  subjects = chatDoc.findSubjects();
-         subjects = subjects.filter( this.onlyUnique )
-  //    console.log(subjects)
-      let triples = []
-      subjects.forEach((s, i) => {
-    //  console.log(s)
+    });
+    console.log(this.messages)*/
+    let  subjects = chatDoc.findSubjects();
+    subjects = subjects.filter( this.onlyUnique )
+    //    console.log(subjects)
+    let triples = []
+    subjects.forEach((s, i) => {
+      //  console.log(s)
       //  let t = s.getTriples()
       let created = s.getString(dct.created)
       let content = s.getLiteral(sioc.content)
-      let t={id:i, created: created, content: content}
-    //  console.log(t)
+      let t={id:i, created: new Date(created).toLocaleTimeString(), content: content}
+      //  console.log(t)
       triples.push(t)
 
     });
-  //  console.log(triples)
-    this.messages = triples
+    //  console.log(triples)
+    this.messages = triples.reverse()
 
     /*  const statements = chatDoc.getStatements();
     console.log(statements)*/
@@ -117,7 +142,7 @@ export default {
   },
   onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
-}
+  }
 }
 }
 </script>
