@@ -61,7 +61,7 @@ export default {
     this.index = this.root+"parle/"+filename
     console.log("Index",this.index)
     //  let app = this
-    var socket = new WebSocket('wss://'+sock, ['solid/0.1.0-alpha']);
+    var socket = new WebSocket('wss://'+sock, ['solid.0.1.0']);
     console.log("SOCKET",socket)
     socket.onopen = function() {
       console.log("SOCKET OPEN", socket,+this.index)

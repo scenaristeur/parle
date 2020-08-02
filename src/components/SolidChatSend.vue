@@ -2,7 +2,7 @@
   <div class="solid-chat-send">
     <!--<h1>Room name</h1> -->
 
-    {{ index }}
+
     <b-input-group class="mt-3">
       <b-form-input v-model="message"></b-form-input>
       <b-input-group-append>
@@ -10,6 +10,10 @@
         <b-button variant="info" @click="send">Send</b-button>
       </b-input-group-append>
     </b-input-group>
+
+    <a v-bind:href="index" target="_blank">where is the data</a>
+    <br>
+    <a href="https://github.com/scenaristeur/parle" target="_blank">source</a>
   </div>
 </template>
 
