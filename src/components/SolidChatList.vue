@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div class="solid-ckhat-list">
     <b-list-group  v-for="m in messages" :key="m.id">
       <b-list-group-item button class="d-flex justify-content-between align-items-center">
         <b-input-group class="mb-2">
@@ -31,8 +31,13 @@
   export default {
     name: 'SolidChatList',
     props: {
-      messages: Array
-    }
+
+    },
+    computed:{
+      messages(){
+        return this.$store.state.chat.messages
+      }
+    },
   }
   </script>
 

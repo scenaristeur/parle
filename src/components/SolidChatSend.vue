@@ -28,16 +28,10 @@ export default {
   components:{
     //solid
   },
-  props: [
-    'index'
-  ],
+
   data: function () {
     return {
       message: "",
-      //    index : "https://parle.solid.community/public/test/lastest.ttl",
-      //  subject: "ola"
-
-
     }
   },
 
@@ -46,18 +40,19 @@ export default {
       // please refer to https://github.com/scenaristeur/shighl/blob/9b4b61d06d8a20f55de3f2aa580cbc5fb840d584/src/Shighl-chat.js#L214
       // and https://github.com/LDflex/LDflex/issues/53
       let webId= this.$store.state.solid.webId
+      let fileUrl = this.$store.state.chat.fileUrl
       if (this.message.length > 0 && webId != null)    {
         console.log(this.message)
         var dateObj = new Date();
         var messageId = "Msg"+dateObj.getTime()
         var date = dateObj.toISOString()
-        let msgUrl = this.index+messageId
+        let msgUrl = this.fileUrl+messageId
         /*  console.log(msgUrl)
         await solid.data[msgUrl].dct$created.add(date)
         await solid.data[msgUrl].sioc$content.add(this.message)*/
         console.log("WEBID",this.$store.state.solid.webId, this.$store.state.count)
 
-        const chatDoc = await fetchDocument(this.index);
+        const chatDoc = await fetchDocument(fileUrl);
         console.log(chatDoc)
         let subj =   chatDoc.addSubject({identifier:messageId})
         subj.addLiteral(sioc.content, this.message)
