@@ -12,6 +12,7 @@ export default {
     async prepareToday(){
       let root = this.$store.state.chat.root
       let now = new Date()
+      this.$store.commit('chat/setDataDate', now)
       let filename = [now.getFullYear(), ("0" + (now.getMonth() + 1)).slice(-2), ("0" + now.getDate()).slice(-2)].join("-")+".ttl"
       let fileUrl = this.$store.state.chat.root+filename
       console.log(fileUrl)
@@ -53,7 +54,7 @@ export default {
       let created = s.getString(dct.created)
       let content = s.getLiteral(sioc.content)
       let maker = s.getNodeRef(foaf.maker)
-      let t={id:i, created: new Date(created).toLocaleTimeString(), content: content, maker:maker}
+      let t={id:s.asRef(), created: new Date(created).toLocaleTimeString(), content: content, maker:maker}
       //  console.log(t)
       triples.push(t)
 

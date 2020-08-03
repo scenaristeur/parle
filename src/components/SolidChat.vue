@@ -56,10 +56,10 @@ export default {
         this.getMessages(msg.data.substring(4))
       }
     }.bind(this)
-    await this.prepareToday()
+  /*  await this.prepareToday()
     console.log("FileUrl",this.$store.state.chat.fileUrl)
-    await this.addSubscription(this.$store.state.chat.fileUrl)
-    this.getMessages(this.$store.state.chat.fileUrl)
+    await this.addSubscription(this.$store.state.chat.fileUrl)*/
+  //  this.getMessages(this.$store.state.chat.fileUrl)
   },
 
   methods: {

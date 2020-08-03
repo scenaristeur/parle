@@ -3,6 +3,7 @@
 // initial state
 const state = () => ({
   root: "",
+  dataDate: "",
   fileUrl: "",
   //  requests: [],
   messages: []
@@ -29,6 +30,9 @@ const mutations = {
   },
   setMessages(state,messages){
     state.messages = messages
+  },
+  setDataDate(state, date){
+    state.dataDate = date
   }
 
 }
