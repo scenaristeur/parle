@@ -36,8 +36,9 @@
 import store from '@/store'
 import infiniteScroll from 'vue-infinite-scroll'
 import BrowserMixin from '@/mixins/BrowserMixin'
-import { fetchDocument } from 'tripledoc';
-import { sioc, dct, foaf } from 'rdf-namespaces'
+import { fetchDocument, createDocument } from 'tripledoc';
+import auth from 'solid-auth-client';
+import { sioc, dct, foaf, schema } from 'rdf-namespaces'
 
 var count = 0;
 export default {
@@ -53,6 +54,7 @@ export default {
     }
   },
   async created(){
+    this.fc   = new SolidFileClient(auth)
     this.date = new Date()
 
     //  this.$store.commit('chat/setDataDate', now)
@@ -70,24 +72,36 @@ export default {
       if (sub_channel != null){
         //create Path
         console.log(sub_channel)
-        let path = parent.substr(0, parent.lastIndexOf("/") + 1);
+        let path = parent.substr(0, parent.lastIndexOf("/") + 1)+sub_channel
         console.log(path)
-            this.date = new Date()
+        this.date = new Date()
         console.log(this.date)
         this.$store.commit('chat/setRoot', path+sub_channel)
         let filename = [this.date.getFullYear(), ("0" + (this.date.getMonth() + 1)).slice(-2), ("0" + this.date.getDate()).slice(-2)].join("-")+".ttl"
-        let fileUrl = path+filename
-        console.log(fileUrl)
+        let fileUrl = path+"/"+filename
+        console.log("FILEURL", fileUrl)
         this.$store.commit('chat/setFileUrl', fileUrl)
         //    this.$store.state.websocket.socket.send('sub '+fileUrl);
         // create Doc
+
+        if( !await this.fc.itemExists( fileUrl )) {
+          await this.fc.postFile(fileUrl, "", "text/turtle")
+          .then((content) => {
+            console.log("File Created",content)
+          })
+          .catch(err => console.error(`Error: ${err}`))
+        }else{
+          console.log("File exist",fileUrl)
+        }
+
         const newDoc = await fetchDocument(fileUrl);
         console.log(newDoc)
         newDoc.addSubject
-        let subj =   newDoc.addSubject({identifier: "#this", identifierPrefix: fileUrl })
+        let subj =   newDoc.addSubject({identifier: "this" })
         //  subj.addLiteral(sioc.content, this.message)
         subj.addLiteral(dct.created, this.date)
-        subj.addNodeRef(foaf.maker, parent)
+        subj.addNodeRef(schema.isPartOf, parent)
+        subj.addNodeRef(foaf.maker, this.$store.state.solid.webId)
         await newDoc.save();
 
         //const referDoc = await await fetchDocument(parent)
