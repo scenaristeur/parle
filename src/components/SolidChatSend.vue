@@ -41,6 +41,7 @@ export default {
       // and https://github.com/LDflex/LDflex/issues/53
       let webId= this.$store.state.solid.webId
       let fileUrl = this.$store.state.chat.fileUrl
+      console.log(fileUrl)
       if (this.message.length > 0 && webId != null)    {
         console.log(this.message)
         var dateObj = new Date();

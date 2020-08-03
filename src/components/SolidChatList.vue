@@ -53,8 +53,16 @@
         date: ""
       }
     },
-    created(){
+    async created(){
       this.date = new Date()
+
+    //  this.$store.commit('chat/setDataDate', now)
+      let filename = [this.date.getFullYear(), ("0" + (this.date.getMonth() + 1)).slice(-2), ("0" + this.date.getDate()).slice(-2)].join("-")+".ttl"
+      let fileUrl = this.$store.state.chat.root+filename
+      console.log(fileUrl)
+    //  await  this.create(fileUrl)
+      this.$store.commit('chat/setFileUrl', fileUrl)
+          this.$store.state.websocket.socket.send('sub '+fileUrl);
     },
     methods: {
       async loadMore() {
@@ -101,7 +109,7 @@
       console.log("Messages",this.data)
 
       this.busy = false;
-      this.$store.state.websocket.socket.send('sub '+fileUrl);
+
       this.date.setDate(this.date.getDate() - 1);
       /*  setTimeout(() => {
       for (var i = 0, j = 10; i < j; i++) {
