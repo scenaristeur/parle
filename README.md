@@ -1,5 +1,6 @@
-# parle
-
+# parle :  the Holocratik conversation tool
+The sub-channel concept of "PARLE" is really revolutionary : From each post, you can create another room or channel, Doing so the conversation flow is not interrupt or pollued by other ideas... They are on another channel !
+If you answer on the same subject, continue the flow, if it's another idea, create a new sub-channel
 
 
 # make a gh-pages branches

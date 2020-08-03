@@ -2,7 +2,9 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Solid Chat</router-link> |
-      <router-link to="/about">About</router-link> 
+      <a href="https://github.com/scenaristeur/parle/projects/1" target="_blank">Contribute</a> |
+      <a href="https://parle.solid.community/public/" target="_blank">Data</a> |  
+      <router-link to="/about">About</router-link>
       <!--  |
       <router-link to="/profile">Profile</router-link> -->
     </div>

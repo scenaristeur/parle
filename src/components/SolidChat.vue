@@ -3,16 +3,6 @@
     <SolidLogin />
     <!--    <SolidChatRooms :root="this.base" :index="this.index" /> -->
     <SolidChatList />
-
-    <b-button @click="before">day before</b-button>
-    <b-button @click="after">day after</b-button>
-    or infinite scroll, loading yesterday...
-    <br>
-    <a v-bind:href="root" target="_blank">where is the data</a>
-    <br>
-    <a href="https://github.com/scenaristeur/parle" target="_blank">source</a>
-    <br><br><br><br><br><br>
-
     <SolidChatSend />
   </div>
 </template>
@@ -56,20 +46,7 @@ export default {
         this.getMessages(msg.data.substring(4))
       }
     }.bind(this)
-  /*  await this.prepareToday()
-    console.log("FileUrl",this.$store.state.chat.fileUrl)
-    await this.addSubscription(this.$store.state.chat.fileUrl)*/
-  //  this.getMessages(this.$store.state.chat.fileUrl)
   },
 
-  methods: {
-    before(){
-      console.log("before")
-    },
-    after(){
-      console.log("after")
-
-    }
-  }
 }
 </script>
