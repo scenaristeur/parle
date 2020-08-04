@@ -2,7 +2,7 @@ import store from '@/store'
 //Common libs
 import auth from 'solid-auth-client';
 import { fetchDocument } from 'tripledoc';
-import { sioc, dct, foaf } from 'rdf-namespaces'
+import { sioc, dct, foaf, schema } from 'rdf-namespaces'
 
 export default {
   created(){
@@ -54,7 +54,15 @@ export default {
       let created = s.getString(dct.created)
       let content = s.getLiteral(sioc.content)
       let maker = s.getNodeRef(foaf.maker)
-      let t={id:s.asRef(), created: new Date(created).toLocaleTimeString(), content: content, maker:maker}
+      let parts = s.getAllNodeRefs(schema.hasPart)
+      let parent = s.getNodeRef(schema.isPartOf)
+      let t={id:s.asRef(),
+        created: new Date(created).toLocaleTimeString(),
+        content: content,
+        maker: maker,
+        parts: parts,
+        parent: parent
+      }
       //  console.log(t)
       triples.push(t)
 

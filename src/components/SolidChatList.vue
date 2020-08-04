@@ -1,226 +1,177 @@
 <template>
-  <div class="solid-ckhat-list">
-    tip : just type text & send to continue the flow, or in case of new idea, click on a topic to create a new channel !
+  <div class="solid-chat-list">
 
-    <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
 
-      <b-list-group  v-for="m in data" :key="m.id">
-        <b-list-group-item  button class="d-flex justify-content-between align-items-center"
-        @click="new_sub(m.id)">
-        <b-input-group class="mb-2">
-          <b-input-group-prepend>
+    <div>
+      <div class="m-3">  Tip : just type text & send to continue the flow, or in case of new idea, start a new thread linked to a post !<br>
+        Then browse channels on <a v-bind:href="'https://scenaristeur.github.io/spoggy-simple/?source='+file" target="_blank">Spoggy</a></div>
 
-            <a v-bind:href="m.maker" v-if="m.maker != null" target="_blank">  <b-icon icon="person-fill"></b-icon> </a>
-            <b-icon v-else  icon="person-fill"></b-icon>
-          </b-input-group-prepend>
-          <div class="ml-3 mr-3">
-            {{ m.content}}
+        <b-input-group prepend="Choose a date" class="mb-2">
+          <b-form-datepicker id="example-datepicker" v-model="date" min="2020-08-01" :max="max"></b-form-datepicker>
+          <b-input-group-append>
+            <b-button @click="sort">Sort</b-button>
+          </b-input-group-append>
+        </b-input-group>
+      </div>
+
+      <b-list-group>
+        <b-list-group-item   v-for="m in messages" :key="m.id" class="flex-column align-items-start">
+          <div class="d-flex w-100 justify-content-between">
+            <div class="mb-1">
+              <a v-bind:href="m.maker" v-if="m.maker != null" target="_blank">
+                <b-icon icon="person-fill"></b-icon>{{ m.maker.split('/').slice(2,3)[0] }}
+              </a>
+
+              <b-icon v-else  icon="person-fill"></b-icon>
+
+            </div>
+            <small class="text-muted">
+              {{ m.created }}
+            </small>
           </div>
 
-        </b-input-group>
+          <p class="mb-1">
+            {{ m.content}}
+          </p>
 
-        <b-badge variant="info">
-          {{ m.created }}
-          <div>
-            newRoom<br> reply <br>
+          <div class="text-muted">
+            <div v-if="m.parent">
+              This <a v-bind:href="m.id.split('#')[0]" target="_blank">{{ m.id.split("/").slice(-2,-1)[0] }}</a> channel as been created from
+              <b-button  variant="outline-info" class="m-1 btn-sm" @click="bascule(m.parent)">
+                {{ m.parent.split("/").slice(-2,-1)[0] }}
+              </b-button>
+            </div>
 
-          </div></b-badge>
+            <b-button  variant="outline-info" class="btn-sm" @click="new_sub(m.id)">start new thread from here</b-button>
+            <b-button v-for="p in m.parts" :key="p" variant="info" class="m-1 btn-sm" @click="bascule(p)">
+              {{ p.split("/").slice(-2,-1)[0] }}
+            </b-button>
+          </div>
         </b-list-group-item>
+
       </b-list-group>
 
+      <div>
+        <b-input-group prepend="Choose a date" class="mb-2">
+          <b-form-datepicker id="example-datepicker2" v-model="date" min="2020-08-01" :max="max"></b-form-datepicker>
+          <b-input-group-append>
+            <b-button @click="sort">Sort</b-button>
+          </b-input-group-append>
+        </b-input-group>
+      </div>
+
+
     </div>
-  </div>
-</template>
+  </template>
 
-<script>
-import store from '@/store'
-import infiniteScroll from 'vue-infinite-scroll'
-import BrowserMixin from '@/mixins/BrowserMixin'
-import { fetchDocument, createDocument } from 'tripledoc';
-import auth from 'solid-auth-client';
-import { sioc, dct, foaf, schema } from 'rdf-namespaces'
+  <script>
+  import store from '@/store'
+  import BrowserMixin from '@/mixins/BrowserMixin.js'
+  import { fetchDocument, createDocument } from 'tripledoc';
+  import auth from 'solid-auth-client';
+  import { sioc, dct, foaf, schema } from 'rdf-namespaces'
 
-var count = 0;
-export default {
-  store,
-  directives: {infiniteScroll},
-  name: 'SolidChatList',
-  mixins: ['BrowserMixin'],
-  data: function () {
-    return {
-      data: [],
-      busy: false,
-      date: ""
-    }
-  },
-  async created(){
-    this.fc   = new SolidFileClient(auth)
-    this.date = new Date()
+  export default {
+    store,
+    name: 'SolidChatList',
+    props: {
+      msg: String
+    },
+    mixins: [BrowserMixin],
+    data: function () {
+      return {
+        date: "",
+        part:""
+      }
+    },
+    created(){
+      let d = new Date()
+      this.date = this.formatDate(d)
+      this.max = this.date
+      this.path = this.$store.state.chat.root
+    },
+    methods: {
+      bascule(p){
+        console.log("Part",p)
+        this.$store.commit('chat/setFileUrl', p)
+        if (this.$store.state.websocket.socket != undefined){
+          this.$store.state.websocket.socket.send('sub '+p);
+        }
+        this.getMessages(p)
+      },
+      sort(){
+        this.messages.reverse()
+      },
+      formatDate(d) {
+        return [d.getFullYear(), ("0" + (d.getMonth() + 1)).slice(-2), ("0" + d.getDate()).slice(-2)].join("-")
+      },
+      async new_sub(parent){
+        // must be cleaned !
+        console.log(parent)
+        var sub_channel = prompt("Create a sub-channel from "+parent);
+        if (sub_channel != null){
+          //create Path
+          console.log(sub_channel)
+          sub_channel = sub_channel.split(' ').join('_');
+          let parent_path = parent.substr(0, parent.lastIndexOf("/") + 1)
+          let parent_messageId = parent.split("#").pop()
+          console.log("Parent",parent_path,parent_messageId)
+          //  this.$store.commit('chat/setRoot', path+sub_channel)
+          let child_path = parent_path+sub_channel+"/"
+          let child_filename = this.date+".ttl"
+          let child_url = child_path+child_filename
+          console.log("Child",child_path, child_filename)
+          this.$store.commit('chat/setFileUrl', child_url)
+          if (this.$store.state.websocket.socket != undefined){
+            this.$store.state.websocket.socket.send('sub '+child_url);
+          }
+          // create Doc
 
-    //  this.$store.commit('chat/setDataDate', now)
-    let filename = [this.date.getFullYear(), ("0" + (this.date.getMonth() + 1)).slice(-2), ("0" + this.date.getDate()).slice(-2)].join("-")+".ttl"
-    let fileUrl = this.$store.state.chat.root+filename
-    console.log(fileUrl)
-    //  await  this.create(fileUrl)
-    this.$store.commit('chat/setFileUrl', fileUrl)
-    this.$store.state.websocket.socket.send('sub '+fileUrl);
-  },
-  methods: {
-    async new_sub(parent){
-      console.log(parent)
-      var sub_channel = prompt("Create a sub-channel from "+parent);
-      if (sub_channel != null){
-        //create Path
-        console.log(sub_channel)
-        let path = parent.substr(0, parent.lastIndexOf("/") + 1)+sub_channel
-        console.log(path)
-        this.date = new Date()
-        console.log(this.date)
-        this.$store.commit('chat/setRoot', path+sub_channel)
-        let filename = [this.date.getFullYear(), ("0" + (this.date.getMonth() + 1)).slice(-2), ("0" + this.date.getDate()).slice(-2)].join("-")+".ttl"
-        let fileUrl = path+"/"+filename
-        console.log("FILEURL", fileUrl)
-        this.$store.commit('chat/setFileUrl', fileUrl)
-        //    this.$store.state.websocket.socket.send('sub '+fileUrl);
-        // create Doc
+          if( !await this.fc.itemExists( child_url )) {
+            await this.fc.postFile(child_url, "", "text/turtle")
+            .then((content) => {
+              console.log("File Created",content)
+            })
+            .catch(err => console.error(`Error: ${err}`))
+          }else{
+            console.log("File exist",child_url)
+          }
 
-        if( !await this.fc.itemExists( fileUrl )) {
-          await this.fc.postFile(fileUrl, "", "text/turtle")
-          .then((content) => {
-            console.log("File Created",content)
-          })
-          .catch(err => console.error(`Error: ${err}`))
-        }else{
-          console.log("File exist",fileUrl)
+          const newDoc = await fetchDocument(child_url);
+          //  console.log(newDoc)
+          newDoc.addSubject
+          let subj =   newDoc.addSubject({identifier: "this" })
+          //  subj.addLiteral(sioc.content, this.message)
+          subj.addLiteral(dct.created, this.date)
+          subj.addNodeRef(schema.isPartOf, parent)
+          subj.addNodeRef(foaf.maker, this.$store.state.solid.webId)
+          await newDoc.save();
+          //  console.log(path, messageId)
+
+          //
+          const referDoc = await await fetchDocument(parent)
+          let p_id = referDoc.getSubject(parent)
+          p_id.addRef(schema.hasPart, child_url)
+          await referDoc.save();
+          this.bascule(child_url)
+          //
+        }
+      },
+    },
+    computed: {
+      file(){
+        let f = this.path+this.date+".ttl"
+        this.$store.commit('chat/setFileUrl', f)
+        if (this.$store.state.websocket.socket != undefined  && this.$store.state.websocket.socket.readyState == 1){
+          this.$store.state.websocket.socket.send('sub '+f);
         }
 
-        const newDoc = await fetchDocument(fileUrl);
-        console.log(newDoc)
-        newDoc.addSubject
-        let subj =   newDoc.addSubject({identifier: "this" })
-        //  subj.addLiteral(sioc.content, this.message)
-        subj.addLiteral(dct.created, this.date)
-        subj.addNodeRef(schema.isPartOf, parent)
-        subj.addNodeRef(foaf.maker, this.$store.state.solid.webId)
-        await newDoc.save();
-
-        //const referDoc = await await fetchDocument(parent)
-
-
+        this.getMessages(f)
+        return f
+      },
+      messages(){
+        return this.$store.state.chat.messages
       }
-
-
-    },
-    async loadMore() {
-      this.busy = true;
-      console.log(this.date)
-      //  let fileUrl = this.$store.state.chat.fileUrl
-      //  let root = this.$store.state.chat.root
-
-      //  this.$store.commit('chat/setDataDate', now)
-      let filename = [this.date.getFullYear(), ("0" + (this.date.getMonth() + 1)).slice(-2), ("0" + this.date.getDate()).slice(-2)].join("-")+".ttl"
-      let fileUrl = this.$store.state.chat.root+filename
-
-      console.log(fileUrl)
-
-      const chatDoc = await fetchDocument(fileUrl);
-      //  console.log(chatDoc)
-      /*  let triples = chatDoc.getTriples()
-      console.log(triples)
-      //  this.messages = {}
-      triples.forEach((t, i) => {
-      !Object.prototype.hasOwnProperty.call(this.messages, t.subject.id) ? this.messages[t.subject.id] = {} : "";
-      this.messages[t.subject.id][t.predicate.id] = t.object.id
-
-    });
-    console.log(this.messages)*/
-    let  subjects = chatDoc.findSubjects();
-    subjects = subjects.filter( this.onlyUnique )
-    //    console.log(subjects)
-    let triples = []
-    subjects.forEach((s, i) => {
-      //console.log()
-      //  let t = s.getTriples()
-      let created = s.getString(dct.created)
-      let content = s.getLiteral(sioc.content)
-      let maker = s.getNodeRef(foaf.maker)
-      let t={id:s.asRef(), created: new Date(created).toLocaleString(), content: content, maker:maker}
-      //  console.log(t)
-      triples.push(t)
-
-    });
-    //  console.log(triples)
-    this.data  = this.data.concat(triples.reverse())
-    //  this.data = messages
-    console.log("Messages",this.data)
-
-    this.busy = false;
-
-    this.date.setDate(this.date.getDate() - 1);
-    /*  setTimeout(() => {
-    for (var i = 0, j = 10; i < j; i++) {
-    this.data.push({ name: count++ });
-
+    }
   }
-  this.busy = false;
-}, 1000);*/
-},
-onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
-}
-},
-watch:{
-  root(root){
-    console.log("New Root", root)
-  },
-  fileUrl(fileUrl){
-    console.log("new fileurl",fileUrl)
-  },
-  messages (messages) {
-    console.log(" Insertion à revoir",messages)
-    let messTemp= messages.concat(this.data)
-    this.data = messTemp.filter( this.onlyUnique )
-    /*messages.forEach((m, i) => {
-    console.log(m)
-    if (this.data.filter(e => e.id === m.id).length == 0) {
-    /* vendors contains the element we're looking for */
-    /*  console.log("pas trouvé",m)
-  }else{
-  console.log("trouvé",m)
-}
-});*/
-
-
-}
-},
-computed:{
-  root(){
-    return this.$store.state.chat.root
-  },
-  fileUrl(){
-    return this.$store.state.chat.fileUrl
-  },
-  messages(){
-    return this.$store.state.chat.messages
-  }
-},
-}
-</script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
+  </script>

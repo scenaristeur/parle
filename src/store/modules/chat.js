@@ -4,6 +4,7 @@
 const state = () => ({
   root: "",
   dataDate: "",
+  path: "",
   fileUrl: "",
   //  requests: [],
   messages: []
@@ -25,14 +26,17 @@ const mutations = {
   setRoot (state, root) {
     state.root = root
   },
-  setFileUrl(state, fileUrl){
-    state.fileUrl = fileUrl
+  setPath(state, path){
+    state.path = path
   },
   setMessages(state,messages){
     state.messages = messages
   },
   setDataDate(state, date){
     state.dataDate = date
+  },
+  setFileUrl(state, fileUrl){
+    state.fileUrl = fileUrl
   }
 
 }

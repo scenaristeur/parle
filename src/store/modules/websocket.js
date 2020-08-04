@@ -2,7 +2,7 @@
 
 // initial state
 const state = () => ({
-  socket: {},
+  socket: null,
   subscriptions: []
 })
 
