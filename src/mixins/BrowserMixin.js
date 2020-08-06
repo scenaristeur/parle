@@ -33,6 +33,18 @@ export default {
     },
     async getMessages(uri){
       let messages = []
+      if( !await this.fc.itemExists( uri )) {
+        await this.fc.postFile(uri, "", "text/turtle")
+        .then((content) => {
+          console.log("File Created",content)
+        })
+        .catch(err => console.error(`Error: ${err}`))
+      }else{
+        console.log("File exist",uri)
+      }
+      if (this.$store.state.websocket.socket != undefined){
+        this.$store.state.websocket.socket.send('sub '+uri);
+      }
       const chatDoc = await fetchDocument(uri);
       //  console.log(chatDoc)
       /*  let triples = chatDoc.getTriples()

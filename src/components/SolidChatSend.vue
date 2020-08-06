@@ -3,13 +3,15 @@
     <!--<h1>Room name</h1> -->
 
 
-    <b-input-group class="mt-3 input" >
+    <b-input-group class="mt-3 input" v-if="webId != null" >
       <b-form-input v-model="message" v-on:keyup.enter="send"></b-form-input>
       <b-input-group-append>
         <!--  <b-button variant="outline-success">Button</b-button>-->
         <b-button variant="warning" @click="send" >Send</b-button>
       </b-input-group-append>
     </b-input-group>
+    <SolidLogin class="mt-3 input" v-else />
+
 
 
   </div>
@@ -19,14 +21,14 @@
 import store from "@/store";
 import { fetchDocument } from 'tripledoc';
 import {namedNode, sioc, dct, foaf } from 'rdf-namespaces'
-
+import SolidLogin from '@/components/SolidLogin.vue'
 
 
 export default {
   store,
   name: 'SolidChatSend',
   components:{
-    //solid
+    SolidLogin
   },
 
   data: function () {
@@ -70,6 +72,11 @@ export default {
       //this.message = ""
       //  await solid.data.from(this.url)[this.subject]['http://www.w3.org/2005/01/wf/flow#message'].add(namedNode(this.url))
     }
+  },
+  computed:{
+    webId(){
+      return this.$store.state.solid.webId
+    },
   }
 }
 </script>
@@ -80,19 +87,5 @@ export default {
   position: fixed;
   bottom:0;
   z-index: 999;
-}
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
 }
 </style>

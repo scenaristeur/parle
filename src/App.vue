@@ -1,24 +1,38 @@
 <template>
   <div id="app">
-    <div id="nav">
+        <NavBar />
+  <!--  <div id="nav">
       <router-link to="/">Solid Chat</router-link> |
-      <a href="https://github.com/scenaristeur/parle/projects/1" target="_blank">Contribute</a> |
+   <a href="https://github.com/scenaristeur/parle/projects/1" target="_blank">Contribute</a> |
       <a href="https://parle.solid.community/public/" target="_blank">Data</a> |
-      <router-link to="/about">About</router-link> v0.0.0
+   <router-link to="/about">About</router-link>
 
-      <!--  |
-      <router-link to="/profile">Profile</router-link> -->
-    </div>
+    |
+      <router-link to="/profile">Profile</router-link>
+    </div> -->
     <router-view/>
   </div>
 </template>
+
+<script>
+import NavBar from '@/components/NavBar.vue'
+
+export default {
+  name: 'App',
+  components: {
+    NavBar,
+  }
+}
+
+</script>
+
 
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+/*  text-align: center;*/
   color: #2c3e50;
 }
 
