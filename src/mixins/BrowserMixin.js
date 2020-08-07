@@ -6,9 +6,10 @@ import { sioc, dct, foaf, schema } from 'rdf-namespaces'
 
 export default {
   created(){
-    this.fc   = new SolidFileClient(auth)
+    this.fc = new SolidFileClient(auth)
   },
   methods: {
+
     async prepareToday(){
       let root = this.$store.state.chat.root
       let now = new Date()

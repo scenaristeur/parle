@@ -3,11 +3,13 @@
     <b-navbar toggleable="lg" type="dark" variant="info">
       <b-navbar-brand to="/">Parle</b-navbar-brand>
 
+      <DisplayButton />
+
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item ><SolidLogin /></b-nav-item> 
+          <b-nav-item ><SolidLogin /></b-nav-item>
           <b-nav-item  href="https://scenaristeur.github.io/spoggy-simple/?source=https://parle.solid.community/public/parle/" target="_blank">Viualization</b-nav-item>
           <b-nav-item  to="/about">About</b-nav-item>
           <!--    <b-nav-item href="#" disabled>Disabled</b-nav-item> -->
@@ -44,13 +46,17 @@
 
 <script>
 import SolidLogin from '@/components/SolidLogin.vue'
+import DisplayButton from '@/components/DisplayButton.vue'
+
+
 export default {
-  name: 'HelloWorld',
+  name: 'NavBar',
   props: {
     msg: String
   },
   components: {
-    SolidLogin
+    SolidLogin,
+    DisplayButton
   }
 }
 </script>

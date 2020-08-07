@@ -1,6 +1,6 @@
 <template>
   <div class="breadcrumb">
-  <!--  {{ root }}<br>
+    <!--  {{ root }}<br>
     {{ fileUrl }}<br>{{ path}}-->
     <b-breadcrumb :items="items"></b-breadcrumb>
   </div>
@@ -42,11 +42,11 @@ computed:{
     let items = []
     let fil = ""
     items.push ({text: "root", href:"/"})
-  //  console.log(this.$store.state.chat.fileUrl.split(this.root))
+    //  console.log(this.$store.state.chat.fileUrl.split(this.root))
     let withoutRoot=this.$store.state.chat.fileUrl.split(this.root)[1]
     if (withoutRoot != undefined && withoutRoot.length > 1){
       let splittedUrl = withoutRoot.split("/")
-
+      console.log(splittedUrl)
       splittedUrl.forEach((part, p) => {
         fil+=part+"/"
         items.push ({text: part, href:"?channel="+fil, active:false})

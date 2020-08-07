@@ -1,6 +1,7 @@
 <template>
   <div class="chat">
     <BreadCrumb />
+
     <!--    <SolidChatRooms :root="this.base" :index="this.index" /> -->
     <SolidChatList />
     <SolidChatSend />

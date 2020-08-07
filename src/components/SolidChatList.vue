@@ -32,14 +32,14 @@
         <div class="text-muted">
           <div v-if="m.parent">
             This <a v-bind:href="m.id.split('#')[0]" target="_blank">{{ m.id.split("/").slice(-2,-1)[0] }}</a> channel as been created from
-            <b-button  variant="outline-info" class="m-1 btn-sm" @click="bascule(m.parent)">
+            <b-button :pill=true variant="outline-info" class="m-1 btn-sm" @click="bascule(m.parent)">
               {{ m.parent.split("/").slice(-2,-1)[0] }}
             </b-button>
           </div>
 
-          <b-button  v-if="webId!=null" variant="outline-info" class="btn-sm" @click="new_sub(m.id)" >Reply</b-button>
+          <b-button  :pill=true v-if="webId!=null" variant="outline-info" class="btn-sm" @click="new_sub(m.id)" >Reply</b-button>
           <span v-else>Login to reply</span>
-          <b-button v-for="p in m.parts" :key="p" variant="info" class="m-1 btn-sm" @click="bascule(p)">
+          <b-button :pill=true  v-for="p in m.parts" :key="p" variant="info" class="m-1 btn-sm" @click="bascule(p)">
             {{ p.split("/").slice(-2,-1)[0] }}
           </b-button>
         </div>
