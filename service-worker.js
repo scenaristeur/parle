@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/parle/precache-manifest.d90ad96b19573abc47170bd390c9cb71.js"
+  "/parle/precache-manifest.8e20460fb5e690d24a4a829d5d0d4cc6.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "parle"});
